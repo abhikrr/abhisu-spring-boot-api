@@ -1,2 +1,4 @@
+com\abhisu\abhisu_spring_boot_api\controller\WelcomeController.class
 com\abhisu\abhisu_spring_boot_api\controller\HelloController.class
 com\abhisu\abhisu_spring_boot_api\AbhisuSpringBootApiApplication.class
+com\abhisu\abhisu_spring_boot_api\service\WelcomeService.class
