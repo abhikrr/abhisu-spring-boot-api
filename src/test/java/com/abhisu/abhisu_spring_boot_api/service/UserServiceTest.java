@@ -2,6 +2,7 @@ package com.abhisu.abhisu_spring_boot_api.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.abhisu.abhisu_spring_boot_api.entity.Role;
 import com.abhisu.abhisu_spring_boot_api.entity.User;
 import com.abhisu.abhisu_spring_boot_api.repository.UserRepository;
 import org.junit.jupiter.api.Test;
@@ -28,21 +29,23 @@ class UserServiceTest {
 
     @Test
     void testSaveUser() {
-        User user = new User(null, "Abhishek", "abhi@mail.com");
-        when(userRepository.save(user)).thenReturn(new User(1L, "Abhishek", "abhi@mail.com"));
+        Role role = new Role(1L, "ROLE_USER");
+        User user = new User(null, "Abhishek", "abhi@mail.com", role);
+        when(userRepository.save(user)).thenReturn(new User(1L, "Abhishek", "abhi@mail.com", role));
 
         User savedUser = userService.save(user);
 
         assertNotNull(savedUser);
-        assertEquals("Abhishek", savedUser.getName());
+        assertEquals("Abhishek", savedUser.getUsername());
         verify(userRepository, times(1)).save(user);
     }
 
     @Test
     void testFindAllUsers() {
+        Role role = new Role(1L, "ROLE_USER");
         List<User> users = Arrays.asList(
-                new User(1L, "A", "a@mail.com"),
-                new User(2L, "B", "b@mail.com")
+                new User(1L, "A", "a@mail.com", role),
+                new User(2L, "B", "b@mail.com", role)
         );
 
         when(userRepository.findAll()).thenReturn(users);
