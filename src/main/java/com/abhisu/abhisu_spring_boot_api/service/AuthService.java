@@ -3,6 +3,8 @@ package com.abhisu.abhisu_spring_boot_api.service;
 import com.abhisu.abhisu_spring_boot_api.dto.*;
 import com.abhisu.abhisu_spring_boot_api.entity.Role;
 import com.abhisu.abhisu_spring_boot_api.entity.User;
+import com.abhisu.abhisu_spring_boot_api.exception.RoleNotFoundException;
+import com.abhisu.abhisu_spring_boot_api.exception.UsernameAlreadyExistsException;
 import com.abhisu.abhisu_spring_boot_api.repository.RoleRepository;
 import com.abhisu.abhisu_spring_boot_api.repository.UserRepository;
 import com.abhisu.abhisu_spring_boot_api.security.CustomUserDetails;
@@ -38,11 +40,11 @@ public class AuthService {
 
     public AuthResponse register(RegisterRequest request) {
         if (userRepository.existsByUsername(request.getUsername())) {
-            throw new RuntimeException("Username already exists");
+            throw new UsernameAlreadyExistsException("Username already exists");
         }
 
         Role role = roleRepository.findByName("ROLE_" + request.getRole().toUpperCase())
-                .orElseThrow(() -> new RuntimeException("Role not found"));
+                .orElseThrow(() -> new RoleNotFoundException("Role not found"));
 
         User user = new User();
         user.setUsername(request.getUsername());

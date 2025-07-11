@@ -7,10 +7,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
-@RequiredArgsConstructor
 public class DataInitializer {
 
     private final RoleRepository roleRepository;
+
+    public DataInitializer(RoleRepository roleRepository) {
+        this.roleRepository = roleRepository;
+    }
 
     @PostConstruct
     public void initRoles() {
@@ -20,10 +23,6 @@ public class DataInitializer {
 
     private void createRoleIfNotExists(String roleName) {
         roleRepository.findByName(roleName)
-                .orElseGet(() -> {
-                    Role newRole = new Role();
-                    newRole.setName(roleName);
-                    return roleRepository.save(newRole);
-                });
+                .orElseGet(() -> roleRepository.save(new Role(null, roleName)));
     }
 }
