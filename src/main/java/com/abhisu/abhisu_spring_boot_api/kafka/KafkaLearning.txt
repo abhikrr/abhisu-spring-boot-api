@@ -76,3 +76,9 @@ Use Cases
     10. Data Lakes
 
 Create a topic to store your events
+    $ bin/kafka-topics.sh --create --topic quickstart-events --bootstrap-server localhost:9092
+    $ bin/kafka-topics.sh --describe --topic quickstart-events --bootstrap-server localhost:9092
+
+Write some events into the topic
+    $ bin/kafka-console-producer.sh --topic quickstart-events --bootstrap-server localhost:9092
+

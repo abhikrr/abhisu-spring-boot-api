@@ -73,9 +73,6 @@ public class KafkaTopicController {
 
             TopicDescription description = descriptionMap.get(topicName);
 
-            System.out.println("📄 Topic: " + description.name());
-            System.out.println("Partitions: " + description.partitions().size());
-
             List<TopicPartitionInfo> partitions = description.partitions();
             for (TopicPartitionInfo partitionInfo : partitions) {
                 System.out.println("--------------------------------------------------");
@@ -85,7 +82,7 @@ public class KafkaTopicController {
                 System.out.println("ISR: " + partitionInfo.isr());
             }
             return "Topic Id: " + description.topicId() +
-                    " Topic Name: " + description.partitions().size() +
+                    " Topic Name: " + description.name() +
                     " Partition Count: " + description.partitions().size() +
                     " Replication Factor: " + description.partitions().get(0).replicas().size();
 
