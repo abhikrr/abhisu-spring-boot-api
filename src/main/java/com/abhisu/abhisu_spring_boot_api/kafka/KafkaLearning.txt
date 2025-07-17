@@ -1,0 +1,78 @@
+What is event streaming?
+    Event streaming is the practice of capturing data in real-time from event sources
+    like databases, sensors, mobile devices, cloud services, and software applications in the form of streams of events;
+    Event streaming thus ensures a continuous flow and interpretation of data so that the right information is at the right place,
+    at the right time.
+
+How does Kafka work in a nutshell?
+    Kafka is a distributed system consisting of servers and clients that communicate via a high-performance TCP network protocol.
+    It can be deployed on bare-metal hardware, virtual machines, and containers in on-premise as well as cloud environments.
+
+    Servers: Kafka is run as a cluster of one or more servers that can span multiple datacenters or cloud regions.
+    Some of these servers form the storage layer, called the brokers.
+    Other servers run Kafka Connect to continuously import and export data as event streams to integrate Kafka with
+    your existing systems such as relational databases as well as other Kafka clusters.
+    To let you implement mission-critical use cases, a Kafka cluster is highly scalable and fault-tolerant:
+    if any of its servers fails, the other servers will take over their work to ensure continuous operations without any data loss.
+
+    Clients: They allow you to write distributed applications and microservices that read, write, and process streams of events in parallel,
+    at scale, and in a fault-tolerant manner even in the case of network problems or machine failures.
+    Kafka ships with some such clients included, which are augmented by dozens of clients provided by the Kafka community:
+    clients are available for Java and Scala including the higher-level Kafka Streams library, for many other programming languages as
+    well as REST APIs.
+
+Main Concepts and Terminology
+    Event: An event records the fact that "something happened" in the world or in your business.
+    It is also called record or message in the documentation.
+    When you read or write data to Kafka, you do this in the form of events.
+    Conceptually, an event has a key, value, timestamp, and optional metadata headers.
+
+    Producers: Producers are those client applications that publish (write) events to Kafka.
+
+    Consumers: Consumers are those that subscribe to (read and process) these events.
+
+    Topic: Topic is similar to a folder in a filesystem, and the events are the files in that folder.
+
+    Partition: Topics are partitioned, meaning a topic is spread over a number of "buckets" located on different Kafka brokers.
+    This distributed placement of your data is very important for scalability because
+    it allows client applications to both read and write the data from/to many brokers at the same time.
+    When a new event is published to a topic, it is actually appended to one of the topic's partitions.
+    Events with the same event key (e.g., a customer or vehicle ID) are written to the same partition, and Kafka guarantees that
+    any consumer of a given topic-partition will always read that partition's events in exactly the same order as they were written.
+
+    Replication: To make your data fault-tolerant and highly-available, every topic can be replicated,
+    even across geo-regions or datacenters, so that there are always multiple brokers that have a copy of the data just in case
+    things go wrong, you want to do maintenance on the brokers, and so on.
+    A common production setting is a replication factor of 3, i.e., there will always be three copies of your data.
+    This replication is performed at the level of topic-partitions.
+
+Kafka APIs
+    In addition to command line tooling for management and administration tasks, Kafka has five core APIs for Java and Scala:
+
+     Admin API to manage and inspect topics, brokers, and other Kafka objects.
+     Producer API to publish (write) a stream of events to one or more Kafka topics.
+     Consumer API to subscribe to (read) one or more topics and to process the stream of events produced to them.
+     Streams API to implement stream processing applications and microservices.
+     It provides higher-level functions to process event streams, including transformations, stateful operations
+     like aggregations and joins, windowing, processing based on event-time, and more.
+     Input is read from one or more topics in order to generate output to one or more topics, effectively transforming
+     the input streams to output streams.
+     Kafka Connect API to build and run reusable data import/export connectors that consume (read) or produce (write)
+     streams of events from and to external systems and applications so they can integrate with Kafka.
+     For example, a connector to a relational database like PostgreSQL might capture every change to a set of tables.
+     However, in practice, you typically don't need to implement your own connectors because the Kafka community already
+     provides hundreds of ready-to-use connectors.
+
+Use Cases
+    1. Messaging:
+    2. Website Activity Tracking
+    3. Log Aggregation
+    4. Stream Processing
+    5. Event Sourcing
+    6. Commit Log
+    7. Metrics
+    8. Data Integration
+    9. IoT
+    10. Data Lakes
+
+Create a topic to store your events
