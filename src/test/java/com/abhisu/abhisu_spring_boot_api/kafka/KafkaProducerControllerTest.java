@@ -6,12 +6,12 @@ import org.springframework.http.ResponseEntity;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class MessageControllerTest {
+class KafkaProducerControllerTest {
 
     @Test
     void testSendMessage_success() {
         KafkaProducer producer = mock(KafkaProducer.class);
-        MessageController controller = new MessageController(producer);
+        KafkaProducerController controller = new KafkaProducerController(producer);
 
         String message = " Hello Kafka ";
         ResponseEntity<String> response = controller.sendMessage(message);
@@ -24,7 +24,7 @@ class MessageControllerTest {
     @Test
     void testSendMessage_empty() {
         KafkaProducer producer = mock(KafkaProducer.class);
-        MessageController controller = new MessageController(producer);
+        KafkaProducerController controller = new KafkaProducerController(producer);
 
         ResponseEntity<String> response = controller.sendMessage("   ");
 
@@ -36,7 +36,7 @@ class MessageControllerTest {
     @Test
     void testSendMessage_null() {
         KafkaProducer producer = mock(KafkaProducer.class);
-        MessageController controller = new MessageController(producer);
+        KafkaProducerController controller = new KafkaProducerController(producer);
 
         ResponseEntity<String> response = controller.sendMessage(null);
 

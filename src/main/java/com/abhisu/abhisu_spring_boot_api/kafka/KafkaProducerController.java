@@ -6,24 +6,24 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Controller to handle Kafka message sending requests.
+ * Controller to handle a Kafka message sending requests.
  */
-@RestController
-public class MessageController {
+@RestController(value = "/api/kafka/producer/")
+public class KafkaProducerController {
 
     private final KafkaProducer producer;
 
-    public MessageController(KafkaProducer producer) {
+    public KafkaProducerController(KafkaProducer producer) {
         this.producer = producer;
     }
 
     /**
-     * Sends a message to Kafka topic.
+     * Sends a message to a Kafka topic.
      *
      * @param message the message to be sent
      * @return ResponseEntity with status
      */
-    @PostMapping("/kafka/messages")
+    @PostMapping("/messages")
     public ResponseEntity<String> sendMessage(@RequestBody String message) {
         if (message == null || message.trim().isEmpty()) {
             return ResponseEntity.badRequest().body("Message must not be empty");
