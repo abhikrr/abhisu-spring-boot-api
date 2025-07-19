@@ -1,8 +1,11 @@
 package com.abhisu.abhisu_spring_boot_api.kafka;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.admin.*;
+import org.apache.kafka.common.KafkaFuture;
 import org.apache.kafka.common.TopicPartitionInfo;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,18 +16,19 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 
-@RestController(value = "/api/kafka/topic")
+@Slf4j
+@RestController
 public class KafkaTopicController {
 
     @Value("${spring.kafka.bootstrap-servers}")
     String bootstrapServers;
 
-    int partitions = 3;
+    int partition = 3;
 
     short replicationFactor = 1;
 
     //$ bin/kafka-topics.sh --create --topic quickstart-events --bootstrap-server localhost:9092
-    @GetMapping("/create-topic/{topicName}")
+    @GetMapping("/api/create-topic/{topicName}")
     public String createTopic(@PathVariable String topicName) {
 
         Properties config = new Properties();
@@ -32,20 +36,22 @@ public class KafkaTopicController {
 
         try (AdminClient adminClient = AdminClient.create(config)) {
 
-            NewTopic newTopic = new NewTopic(topicName, partitions, replicationFactor);
+            NewTopic newTopic = new NewTopic(topicName, partition, replicationFactor);
 
             adminClient.createTopics(Collections.singleton(newTopic)).all().get();
 
-            System.out.println("Topic '" + topicName + "' created successfully!");
+            return ("Topic " + topicName + " created successfully!" );
+
         } catch (ExecutionException e) {
-            System.err.println("Topic creation failed: " + e.getCause().getMessage());
-        } catch (Exception e) {
-            e.printStackTrace();
+            return "Topic creation failed: " + e.getCause().getMessage();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return  e.toString();
         }
-        return "Kafka topic created successfully!";
     }
 
-    @GetMapping("/get-topic/all")
+    //$ bin/kafka-topics.sh --list --bootstrap-server localhost:9092
+    @GetMapping("/api/list-topic/all")
     public String  getKafkaTopics() {
         Properties config = new Properties();
         config.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
@@ -54,14 +60,14 @@ public class KafkaTopicController {
             return "Available topics: " + adminClient.listTopics().names().get();
         } catch (ExecutionException e) {
             return "Error fetching topics: " + e.getCause().getMessage();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "An error occurred while fetching topics.";
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return  e.toString();
         }
     }
 
     //$ bin/kafka-topics.sh --describe --topic quickstart-events --bootstrap-server localhost:9092
-    @GetMapping("/describe/{topicName}")
+    @GetMapping("/api/get-topic/{topicName}")
     public String getKafkaTopic(@PathVariable String topicName) {
 
         Properties config = new Properties();
@@ -69,17 +75,18 @@ public class KafkaTopicController {
 
         try (AdminClient adminClient = AdminClient.create(config)) {
             DescribeTopicsResult result = adminClient.describeTopics(Collections.singleton(topicName));
-            Map<String, TopicDescription> descriptionMap = result.all().get();
+            Map<String, KafkaFuture<TopicDescription>> descriptionMap = result.topicNameValues();
 
-            TopicDescription description = descriptionMap.get(topicName);
+            TopicDescription description = descriptionMap.get(topicName).get();
 
             List<TopicPartitionInfo> partitions = description.partitions();
+
             for (TopicPartitionInfo partitionInfo : partitions) {
-                System.out.println("--------------------------------------------------");
-                System.out.println("Partition: " + partitionInfo.partition());
-                System.out.println("Leader: " + partitionInfo.leader());
-                System.out.println("Replicas: " + partitionInfo.replicas());
-                System.out.println("ISR: " + partitionInfo.isr());
+                log.info("--------------------------------------------------");
+                log.info("Partition: {}", partitionInfo.partition());
+                log.info("Leader: {}", partitionInfo.leader());
+                log.info("Replicas: {}", partitionInfo.replicas());
+                log.info("ISR: {}", partitionInfo.isr());
             }
             return "Topic Id: " + description.topicId() +
                     " Topic Name: " + description.name() +
@@ -87,10 +94,28 @@ public class KafkaTopicController {
                     " Replication Factor: " + description.partitions().get(0).replicas().size();
 
         } catch (ExecutionException e) {
-            System.err.println("Failed to describe topic: " + e.getCause().getMessage());
-        } catch (Exception e) {
-            e.printStackTrace();
+            return "Failed to describe topic: " + e.getCause().getMessage();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return e.toString();
         }
-        return null;
     }
+
+    @DeleteMapping("/api/delete-topic/{topicName}")
+    public String deleteTopic(@PathVariable String topicName) {
+
+        Properties config = new Properties();
+        config.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+
+        try (AdminClient adminClient = AdminClient.create(config)) {
+            adminClient.deleteTopics(Collections.singleton(topicName)).all().get();
+            return "Topic " + topicName + " deleted successfully!";
+        } catch (ExecutionException e) {
+            return "Failed to delete topic: " + e.getCause().getMessage();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return e.toString();
+        }
+    }
+
 }

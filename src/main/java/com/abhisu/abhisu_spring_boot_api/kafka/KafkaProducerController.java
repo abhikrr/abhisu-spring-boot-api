@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * Controller to handle a Kafka message sending requests.
  */
-@RestController(value = "/api/kafka/producer/")
+@RestController
 public class KafkaProducerController {
 
     private final KafkaProducer producer;
@@ -23,7 +23,7 @@ public class KafkaProducerController {
      * @param message the message to be sent
      * @return ResponseEntity with status
      */
-    @PostMapping("/messages")
+    @PostMapping("/api/messages")
     public ResponseEntity<String> sendMessage(@RequestBody String message) {
         if (message == null || message.trim().isEmpty()) {
             return ResponseEntity.badRequest().body("Message must not be empty");
