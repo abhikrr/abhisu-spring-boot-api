@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
+@Table(name = "todo_tbl")
 @Data
 public class ToDo {
 

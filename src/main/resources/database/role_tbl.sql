@@ -2,3 +2,8 @@ CREATE TABLE role_tbl (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(100) UNIQUE NOT NULL
 );
+
+-- Insert Roles
+INSERT INTO role_tbl (name) VALUES
+('ROLE_USER'),
+('ROLE_ADMIN');
