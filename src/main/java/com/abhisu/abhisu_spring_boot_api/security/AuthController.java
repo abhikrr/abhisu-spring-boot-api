@@ -1,4 +1,4 @@
-package com.abhisu.abhisu_spring_boot_api.controller;
+package com.abhisu.abhisu_spring_boot_api.security;
 
 import com.abhisu.abhisu_spring_boot_api.dto.*;
 import com.abhisu.abhisu_spring_boot_api.service.AuthService;

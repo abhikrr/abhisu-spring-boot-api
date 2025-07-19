@@ -25,7 +25,7 @@ public class JwtTokenProvider {
         this.key = Keys.hmacShaKeyFor(secretKey.getBytes());
     }
 
-    // ✅ Generate token
+    // ✅ Generate JWT token
     public String generateToken(String username, String role) {
         return Jwts.builder()
                 .setSubject(username)
@@ -54,5 +54,11 @@ public class JwtTokenProvider {
         } catch (JwtException | IllegalArgumentException _) {
             return false;
         }
+    }
+
+    // ✅ Check if token is expired
+    private boolean isTokenExpired(String token) {
+        return Jwts.parser().setSigningKey(secretKey)
+                .parseClaimsJws(token).getBody().getExpiration().before(new Date());
     }
 }
