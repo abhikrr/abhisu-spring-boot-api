@@ -55,10 +55,4 @@ public class JwtTokenProvider {
             return false;
         }
     }
-
-    // ✅ Check if token is expired
-    private boolean isTokenExpired(String token) {
-        return Jwts.parser().setSigningKey(secretKey)
-                .parseClaimsJws(token).getBody().getExpiration().before(new Date());
-    }
 }
